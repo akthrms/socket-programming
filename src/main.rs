@@ -60,22 +60,18 @@ fn main() {
     });
     let address: &str = &args[3];
 
-    match protocol {
-        Protocol::Tcp => match role {
-            Role::Server => {
-                tcp_server::serve(address).unwrap_or_else(|e| log::error!("{}", e));
-            }
-            Role::Client => {
-                tcp_client::connect(address).unwrap_or_else(|e| log::error!("{}", e));
-            }
-        },
-        Protocol::Udp => match role {
-            Role::Server => {
-                udp_server::serve(address).unwrap_or_else(|e| log::error!("{}", e));
-            }
-            Role::Client => {
-                udp_client::communicate(address).unwrap_or_else(|e| log::error!("{}", e));
-            }
-        },
+    match (protocol, role) {
+        (Protocol::Tcp, Role::Server) => {
+            tcp_server::serve(address).unwrap_or_else(|e| log::error!("{}", e));
+        }
+        (Protocol::Tcp, Role::Client) => {
+            tcp_client::connect(address).unwrap_or_else(|e| log::error!("{}", e));
+        }
+        (Protocol::Udp, Role::Server) => {
+            udp_server::serve(address).unwrap_or_else(|e| log::error!("{}", e));
+        }
+        (Protocol::Udp, Role::Client) => {
+            udp_client::communicate(address).unwrap_or_else(|e| log::error!("{}", e));
+        }
     }
 }
